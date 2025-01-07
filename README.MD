@@ -1,5 +1,5 @@
 # DotAutoencoder Model for Pong Game Dot Recognition
-
+![DotAutoencoder Architecture](https://github.com/barron9/encoder_decoder_for_pong_v5/blob/master/dot_gen.png)
 ## Introduction
 
 The **DotAutoencoder** model is a neural network designed for recognizing and processing dots in the context of a Pong game. It is an autoencoder architecture consisting of an encoder and decoder that work together to both compress and reconstruct the input data, which includes images and associated coordinates (`x`, `y`) of the dot in the Pong environment.
