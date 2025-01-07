@@ -1,4 +1,4 @@
-# DotAutoencoder Model for Pong Game Dot Recognition
+# Autoencoder Model for Pong Game Point Recognition
 ![DotAutoencoder Architecture](https://github.com/barron9/encoder_decoder_for_pong_v5/blob/master/dot_gen.png)
 ```python
 DotAutoencoder(
