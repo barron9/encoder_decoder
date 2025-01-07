@@ -119,13 +119,13 @@ import torch.nn.functional as F
 
 # Create the model
 model = DotAutoencoder()
-
+print(model)
 # Loss function and optimizer
 criterion = nn.MSELoss()  # Use MSE Loss for reconstruction
 optimizer = optim.Adam(model.parameters(), lr=0.001)
 
 # Training loop
-num_epochs = 50
+num_epochs = 20
 for epoch in range(num_epochs):
     model.train()  # Set the model to training mode
     running_loss = 0.0
@@ -168,8 +168,10 @@ with torch.no_grad():
             fig, ax = plt.subplots(2, 8, figsize=(12, 4))
             for j in range(8):
                 # Show original (image, x, y) and reconstructed output
+                ax[0, j].set_title(f"({x[j].item()*64},{y[j].item()*64})", fontsize=6)
                 ax[0, j].imshow(image[j].squeeze(), cmap='gray')  # Show original image
                 ax[0, j].axis('off')
+                ax[1, j].set_title(f"")
                 ax[1, j].imshow(output[j].squeeze()[0, :, :], cmap='gray')  # Show reconstructed output
                 ax[1, j].axis('off')
             plt.show()
