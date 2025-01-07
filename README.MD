@@ -10,4 +10,4 @@
 
 ### Purpose
 
-This model is tailored to handle the dot recognition problem in the Pong game. It takes an image of the game state along with the `x` and `y` coordinates of the dot, processes it through the encoder, and then reconstructs the image and the coordinates through the decoder. This can be useful for applications such as tracking the movement of the Pong ball or learning more about the game dynamics from visual data.
+This model is to handle the point problem in the Pong game that makes training time increase only if used linear layers and pgradient. It takes an image of the game state, processes it through the encoder, and then reconstructs the image and the x,y coordinates through the decoder.
