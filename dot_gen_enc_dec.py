@@ -82,13 +82,13 @@ class DotAutoencoder(nn.Module):
         self.conv1 = nn.Conv2d(3, 32, kernel_size=3, padding=1)  # Conv layer 1 (input has 3 channels now)
         self.pool = nn.MaxPool2d(2, 2)  # Max pooling layer
         self.conv2 = nn.Conv2d(32, 64, kernel_size=3, padding=1)  # Conv layer 2
+        self.bn = nn.BatchNorm2d(64)
         self.fc1 = nn.Linear(64 * 16 * 16, 128)  # Fully connected layer
         
         # Decoder: Reconstruct the (image, x, y)
         self.fc2 = nn.Linear(128, 64 * 16 * 16)  # Fully connected layer
         self.deconv1 = nn.ConvTranspose2d(64, 32, kernel_size=3, stride=2, padding=1, output_padding=1)  # Deconv layer 1
         self.deconv2 = nn.ConvTranspose2d(32, 3, kernel_size=3, stride=2, padding=1, output_padding=1)  # Deconv layer 2 (output 3 channels for image, x, y)
-        
     def forward(self, image, x, y):
         # Concatenate image, x, and y along the channel dimension (now input has 3 channels)
         # Expand coordinates to match the spatial dimensions of the image (i.e., (32, 1, 64, 64))
@@ -102,6 +102,7 @@ class DotAutoencoder(nn.Module):
         # Encoder
         x = self.pool(torch.relu(self.conv1(input_data)))  # First conv + pool
         x = self.pool(torch.relu(self.conv2(x)))  # Second conv + pool
+        x = self.bn(x)
         x = x.view(-1, 64 * 16 * 16)  # Flatten the feature map
         x = torch.relu(self.fc1(x))  # First fully connected
         
@@ -110,7 +111,6 @@ class DotAutoencoder(nn.Module):
         x = x.view(-1, 64, 16, 16)  # Reshape to feature map
         x = torch.relu(self.deconv1(x))  # First deconv layer
         x = self.deconv2(x)  # Output image (reconstructed image, x, y)
-        
         return x
 
 
@@ -123,10 +123,12 @@ print(model)
 # Loss function and optimizer
 criterion = nn.MSELoss()  # Use MSE Loss for reconstruction
 optimizer = optim.Adam(model.parameters(), lr=0.001)
-
+train = True
 # Training loop
 num_epochs = 20
 for epoch in range(num_epochs):
+    if train == False:
+        break
     model.train()  # Set the model to training mode
     running_loss = 0.0
     
@@ -154,7 +156,17 @@ for epoch in range(num_epochs):
         #if (i + 1) % 1 == 0:
         print(f"Epoch [{epoch + 1}/{num_epochs}], Step [{i + 1}/{len(train_loader)}], Loss: {running_loss / 100:.4f}")
         running_loss = 0.0
-            
+
+import pickle
+if train:
+    # Serialize the model to a file
+    with open('dotautoenc.pkl', 'wb') as file:
+        pickle.dump(model, file)
+else:
+    # Load the model from the file
+    with open('dotautoenc.pkl', 'rb') as file:
+        model = pickle.load(file)
+
 import matplotlib.pyplot as plt
 
 # After training, you can evaluate the model
